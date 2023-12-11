@@ -1,0 +1,6 @@
+[bigtop]
+name=Bigtop
+enabled=1
+gpgcheck=1
+baseurl=http://repos.bigtop.apache.org/releases/3.2.1/centos/7/$basearch
+gpgkey=https://dist.apache.org/repos/dist/release/bigtop/KEYS

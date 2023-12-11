@@ -1,4 +1,4 @@
-FROM ghcr.io/nationalsecurityagency/datawave-stack-base:5b658f2e82b89a4f9b25a5412a8a1468049f9634
+FROM ghcr.io/nationalsecurityagency/datawave-stack-base:main
 
 # Add native libs
 ARG HADOOP_VERSION=3.3.6

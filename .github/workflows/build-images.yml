@@ -45,19 +45,19 @@ jobs:
         with:
           context: datawave-base/
           push: true
-          tags: "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-base:${{ github.sha }}"
+          tags: "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-base:${{ github.ref_name  }}"
           labels: ${{ steps.meta.outputs.labels }}
       - name: Build and push Docker hadoop image
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:
           context: datawave-hadoop/
           push: true
-          tags: "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-hadoop:${{ github.sha }}"
+          tags: "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-hadoop:${{ github.ref_name  }}"
           labels: ${{ steps.meta.outputs.labels }}
       - name: Build and push Docker accumulo image
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:
           context: datawave-accumulo/
           push: true
-          tags: "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-accumulo:${{ github.sha }}"
+          tags: "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-accumulo:${{ github.ref_name  }}"
           labels: ${{ steps.meta.outputs.labels }}

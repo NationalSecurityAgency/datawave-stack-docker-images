@@ -1,10 +1,10 @@
 
 
-ARG BUILDER_IMAGE_NAME=ghcr.io/nationalsecurityagency/datawave-hadoop
-ARG BUILDER_IMAGE_TAG=docker-images
+ARG BUILDER_IMAGE_NAME=ghcr.io/nationalsecurityagency/datawave-stack-hadoop
+ARG BUILDER_IMAGE_TAG=main
 
-ARG BASE_IMAGE_NAME=ghcr.io/nationalsecurityagency/datawave-hadoop
-ARG BASE_IMAGE_TAG=docker-images
+ARG BASE_IMAGE_NAME=ghcr.io/nationalsecurityagency/datawave-stack-hadoop
+ARG BASE_IMAGE_TAG=main
 
 ARG ACCUMULO_VERSION=2.1.2
 ARG ZOOKEEPER_VERSION=3.7.2

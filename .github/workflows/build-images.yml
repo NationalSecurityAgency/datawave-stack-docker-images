@@ -53,4 +53,4 @@ jobs:
         with:
           context: datawave-base
           push: true
-          tags: ${{ env.REGISTRY }}/${{ matrix.value}}:${{ github.ref_name  }}"
+          tags: ${{ env.REGISTRY }}/${{ matrix.value}}:${{ github.ref_name  }}

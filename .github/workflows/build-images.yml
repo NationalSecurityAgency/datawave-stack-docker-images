@@ -20,7 +20,7 @@ jobs:
       matrix:
         value:
           - datawave-audit-service
-          - datawave-hazelcase-service
+          - datawave-hazelcast-service
           - datawave-config-service
           - datawave-authorization-service
           - datawave-dictionary-service

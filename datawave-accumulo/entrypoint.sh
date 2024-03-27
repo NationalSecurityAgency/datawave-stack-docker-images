@@ -1,7 +1,5 @@
 #!/bin/bash
 
-
-
 test -z "${ACCUMULO_INSTANCE_NAME}" && ACCUMULO_INSTANCE_NAME="dev"
 
 if [ "$1" = "accumulo" ] && [ "$2" = "master" ]; then

@@ -6,7 +6,7 @@ ARG BUILDER_IMAGE_TAG=3.3.6
 ARG BASE_IMAGE_NAME=ghcr.io/nationalsecurityagency/datawave-stack-hadoop
 ARG BASE_IMAGE_TAG=3.3.6
 
-ARG ACCUMULO_VERSION=2.1.2
+ARG ACCUMULO_VERSION=2.1.3-SNAPSHOT
 ARG ZOOKEEPER_VERSION=3.7.2
 
 FROM ${BUILDER_IMAGE_NAME}:${BUILDER_IMAGE_TAG} as builder
@@ -106,9 +106,7 @@ ENV HADOOP_HOME=/usr/local/hadoop \
     HADOOP_YARN_HOME=/usr/local/hadoop \
     HADOOP_CONF_DIR=/usr/local/hadoop/etc/hadoop \
     YARN_CONF_DIR=/usr/local/hadoop/etc/hadoop \
-    JAVA_HOME=/usr/lib/jvm/java \
-	HADOOP_CLASSPATH=/usr/local/hadoop/*:/usr/local/hadoop/lib/*:/usr/local/hadoop-hdfs/*:/usr/local/hadoop-hdfs/lib/*
-
+    JAVA_HOME=/usr/lib/jvm/java
 
 COPY ./entrypoint.sh /
 ENTRYPOINT ["/entrypoint.sh", "accumulo"]

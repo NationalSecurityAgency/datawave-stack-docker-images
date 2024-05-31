@@ -27,6 +27,7 @@ jobs:
           - datawave-hazelcast-service
           - datawave-dictionary-service
           - datawave-audit-service
+          - datawave-accumulo-service
     # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
     permissions:
       contents: read

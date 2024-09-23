@@ -1,0 +1,74 @@
+name: Build Accumulo Image
+
+on:
+  workflow_dispatch:
+    branches:
+    - '**'
+    inputs:
+      accumuloBranch:
+        required: true
+  schedule:
+    - cron: "0 0 * * *" 
+
+env:
+  REGISTRY: ghcr.io/nationalsecurityagency
+  JAVA_VERSION: '17'
+  JAVA_DISTRIBUTION: 'zulu' #This is the default on v1 of the action for 1.8
+  MAVEN_OPTS: "-Djansi.force=true -Dhttps.protocols=TLSv1.2 -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Djava.awt.headless=true -XX:ThreadStackSize=1m"
+
+jobs:
+  build-accumulo-image:
+    runs-on: ubuntu-latest
+    # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
+    permissions:
+      contents: read
+      packages: write
+      #
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        path: this-repo
+
+    - name: Checkout Accumulo
+      uses: actions/checkout@v4
+      with:
+        repository: apache/accumulo
+        path: accumulo
+        ref: ${{ github.event.inputs.accumuloBranch || '2.1' }}
+
+    - name: Set up JDK ${{env.JAVA_VERSION}}
+      uses: actions/setup-java@v3
+      with:
+        distribution: ${{env.JAVA_DISTRIBUTION}}
+        java-version: ${{env.JAVA_VERSION}}
+        cache: 'maven'
+    - name: Build Accumulo
+      run: |
+        cd $GITHUB_WORKSPACE/accumulo
+        mvn -V -B -e -ntp "-Dstyle.color=always" -DskipTests -T1C clean package
+        cp $GITHUB_WORKSPACE/accumulo/assemble/target/accumulo-*.tar.gz $GITHUB_WORKSPACE/this-repo/datawave-accumulo/files
+        cd $GITHUB_WORKSPACE
+
+      # Uses the `docker/login-action` action to log in to the Container registry registry using the account and password that will publish the packages. Once published, the packages are scoped to the account defined here.
+    - name: Log in to the Container registry
+      uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    # This step uses [docker/metadata-action](https://github.com/docker/metadata-action#about) to extract tags and labels that will be applied to the specified image. The `id` "meta" allows the output of this step to be referenced in a subsequent step. The `images` value provides the base name for the tags and labels.
+    - name: Extract metadata (tags, labels) for Docker for base image
+      id: meta
+      uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+      with:
+        images: "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}"
+    # This step uses the `docker/build-push-action` action to build the image, based on your repository's `Dockerfile`. If the build succeeds, it pushes the image to GitHub Packages.
+    # It uses the `context` parameter to define the build's context as the set of files located in the specified path. For more information, see "[Usage](https://github.com/docker/build-push-action#usage)" in the README of the `docker/build-push-action` repository.
+    # It uses the `tags` and `labels` parameters to tag and label the image with the output from the "meta" step.
+    - name: Push images to create packages for the ones i dont have access to create
+      uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+      with:
+        context: this-repo/datawave-accumulo
+        push: true
+        tags: ${{ env.REGISTRY }}/datawave-stack-accumulo:${{ github.event.inputs.accumuloBranch || '2.1' }}

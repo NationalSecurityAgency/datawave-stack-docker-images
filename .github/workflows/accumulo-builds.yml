@@ -7,6 +7,8 @@ on:
     inputs:
       accumuloBranch:
         required: true
+      accumuloRepo:
+        required: false
   schedule:
     - cron: "0 0 * * *" 
 
@@ -33,7 +35,7 @@ jobs:
     - name: Checkout Accumulo
       uses: actions/checkout@v4
       with:
-        repository: apache/accumulo
+        repository: ${{ github.event.inputs.accumuloRepo || 'apache/accumulo' }}
         path: accumulo
         ref: ${{ github.event.inputs.accumuloBranch || '2.1' }}
 

@@ -7,8 +7,10 @@ on:
     inputs:
       accumuloBranch:
         required: true
+        description: Branch name to build. Will be used as image tag.
       accumuloRepo:
         required: false
+        description: Accumulo Repo to use. Expected to be at Gitub. Example: apache/accumulo
   schedule:
     - cron: "0 0 * * *" 
 

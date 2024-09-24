@@ -2,8 +2,6 @@ name: Build Accumulo Image
 
 on:
   workflow_dispatch:
-    branches:
-    - '**'
     inputs:
       accumuloBranch:
         required: true

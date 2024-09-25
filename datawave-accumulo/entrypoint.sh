@@ -2,7 +2,7 @@
 
 test -z "${ACCUMULO_INSTANCE_NAME}" && ACCUMULO_INSTANCE_NAME="dev"
 
-if [ "$1" = "accumulo" ] && [ "$2" = "master" ]; then
+if [ "$1" = "accumulo" ] && { [ "$2" = "master" ] || [ "$2" = "manager" ]; }; then
 	# Try to find desired root password from trace config
 	TRACE_USER=root
 	CLIENT_USERNAME=root

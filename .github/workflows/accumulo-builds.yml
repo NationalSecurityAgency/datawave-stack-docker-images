@@ -1,9 +1,9 @@
 name: Build Accumulo Image
 
 on:
+  repository_dispatch:
+    types: [trigger-workflow]
   workflow_dispatch:
-    branches:
-    - '**'
     inputs:
       accumuloBranch:
         required: true
@@ -37,9 +37,9 @@ jobs:
     - name: Checkout Accumulo
       uses: actions/checkout@v4
       with:
-        repository: ${{ github.event.inputs.accumuloRepo || 'apache/accumulo' }}
+        repository: ${{ github.event.client_payload.accumuloRepo  || github.event.inputs.accumuloRepo || 'apache/accumulo' }}
         path: accumulo
-        ref: ${{ github.event.inputs.accumuloBranch || '2.1' }}
+        ref: ${{ github.event.client_payload.accumuloBranch || github.event.inputs.accumuloBranch || '2.1' }}
 
     - name: Set up JDK ${{env.JAVA_VERSION}}
       uses: actions/setup-java@v3
@@ -79,4 +79,4 @@ jobs:
         push: true
         build-args: |
           ACCUMULO_VERSION=${{ steps.project.outputs.version }}
-        tags: ${{ env.REGISTRY }}/datawave-stack-accumulo:${{ github.event.inputs.accumuloBranch || '2.1' }}
+        tags: ${{ env.REGISTRY }}/datawave-stack-accumulo:${{ github.event.client_payload.tag || github.event.inputs.accumuloBranch || '2.1' }}

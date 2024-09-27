@@ -52,7 +52,9 @@ jobs:
         cp $GITHUB_WORKSPACE/accumulo/assemble/target/accumulo-*.tar.gz $GITHUB_WORKSPACE/this-repo/datawave-accumulo/files
         cd $GITHUB_WORKSPACE
     - name: Extract Maven project version
-      run: echo version=$(mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.incrementalVersion})-$(git rev-parse --short HEAD) >> $GITHUB_OUTPUT
+      run: |
+        cd $GITHUB_WORKSPACE/accumulo
+        echo version=$(mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.incrementalVersion})-$(git rev-parse --short HEAD) >> $GITHUB_OUTPUT
       id: project
       # Uses the `docker/login-action` action to log in to the Container registry registry using the account and password that will publish the packages. Once published, the packages are scoped to the account defined here.
     - name: Log in to the Container registry

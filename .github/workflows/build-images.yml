@@ -19,15 +19,7 @@ jobs:
     strategy:
       matrix:
         value:
-          - datawave-query-service
-          - datawave-query-metric-service
-          - datawave-query-executor-service
-          - datawave-mapreduce-query-service
-          - datawave-modification-service
-          - datawave-hazelcast-service
-          - datawave-dictionary-service
-          - datawave-audit-service
-          - datawave-accumulo-service
+          - ingest-service
     # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
     permissions:
       contents: read

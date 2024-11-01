@@ -19,9 +19,9 @@ jobs:
     strategy:
       matrix:
         value:
-          - ingest-service
-          - bundler-service
-          - feeder-service
+          - datawave-ingest-service
+          - datawave-bundler-service
+          - datawave-feeder-service
     # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
     permissions:
       contents: read

@@ -20,6 +20,8 @@ jobs:
       matrix:
         value:
           - ingest-service
+          - bundler-service
+          - feeder-service
     # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
     permissions:
       contents: read

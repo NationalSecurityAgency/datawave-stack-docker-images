@@ -19,9 +19,7 @@ jobs:
     strategy:
       matrix:
         value:
-          - datawave-ingest-service
-          - datawave-bundler-service
-          - datawave-feeder-service
+          - datawave-s3
     # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
     permissions:
       contents: read

@@ -6,7 +6,7 @@ ARG BUILDER_IMAGE_TAG=3.3.6
 ARG BASE_IMAGE_NAME=ghcr.io/nationalsecurityagency/datawave-stack-hadoop
 ARG BASE_IMAGE_TAG=3.3.6
 
-ARG ACCUMULO_VERSION=2.1.3-SNAPSHOT
+ARG ACCUMULO_VERSION=2.1.4-97e4684860
 ARG ZOOKEEPER_VERSION=3.7.2
 
 FROM ${BUILDER_IMAGE_NAME}:${BUILDER_IMAGE_TAG} as builder
@@ -91,6 +91,10 @@ RUN cd /opt \
     && chown -h ${USER}:${GROUP} ./zookeeper \
 	&& usermod -d /opt/accumulo ${USER}
 
+
+RUN rm /opt/accumulo-${ACCUMULO_VERSION}/lib/commons-vfs2-2.9.0.jar
+ADD files/commons-vfs2-2.1.jar /opt/accumulo-${ACCUMULO_VERSION}/lib/commons-vfs2-2.1.jar
+RUN chmod 777 /opt/accumulo-${ACCUMULO_VERSION}/lib/commons-vfs2-2.1.jar
 
 USER ${USER}
 

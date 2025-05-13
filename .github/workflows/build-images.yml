@@ -19,7 +19,7 @@ jobs:
     strategy:
       matrix:
         value:
-          - datawave-community-operator
+          - datawave-file-provider-service
     # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
     permissions:
       contents: read

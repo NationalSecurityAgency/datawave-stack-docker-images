@@ -19,7 +19,7 @@ jobs:
     strategy:
       matrix:
         value:
-          - datawave-file-provider-service
+          - datawave/query-metric-service
     # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
     permissions:
       contents: read

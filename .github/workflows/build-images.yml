@@ -19,8 +19,7 @@ jobs:
     strategy:
       matrix:
         value:
-          - datawave/datawave-stack-hadoop
-          - datawave/datawave-stack-accumulo
+          - datawave/bitnami-zookeeper
     # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
     permissions:
       contents: read

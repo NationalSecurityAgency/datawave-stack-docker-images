@@ -1,15 +1,15 @@
 
 
 ARG BUILDER_IMAGE_NAME=ghcr.io/nationalsecurityagency/datawave-stack-hadoop
-ARG BUILDER_IMAGE_TAG=3.3.6
+ARG BUILDER_IMAGE_TAG=3.4.1
 
 ARG BASE_IMAGE_NAME=ghcr.io/nationalsecurityagency/datawave-stack-hadoop
-ARG BASE_IMAGE_TAG=3.3.6
+ARG BASE_IMAGE_TAG=3.4.1
 
-ARG ACCUMULO_VERSION=2.1.4-97e4684860
-ARG ZOOKEEPER_VERSION=3.7.2
+ARG ACCUMULO_VERSION=2.1.4
+ARG ZOOKEEPER_VERSION=3.8.5
 
-FROM ${BUILDER_IMAGE_NAME}:${BUILDER_IMAGE_TAG} as builder
+FROM ${BUILDER_IMAGE_NAME}:${BUILDER_IMAGE_TAG} AS builder
 
 ARG ACCUMULO_VERSION
 ARG ZOOKEEPER_VERSION
@@ -18,7 +18,6 @@ ARG ZOOKEEPER_VERSION
 ARG ACCUMULO_DOWNLOAD_URL="https://dlcdn.apache.org/accumulo/${ACCUMULO_VERSION}/accumulo-${ACCUMULO_VERSION}-bin.tar.gz"
 ARG ACCUMULO_BACKUP_DOWNLOAD_URL="https://archive.apache.org/dist/accumulo/${ACCUMULO_VERSION}/accumulo-${ACCUMULO_VERSION}-bin.tar.gz"
 
-#ARG ZOOKEEPER_DOWNLOAD_URL="https://www.apache.org/dyn/closer.cgi?action=download&filename=zookeeper/zookeeper-${ZOOKEEPER_VERSION}/apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz"
 ARG ZOOKEEPER_DOWNLOAD_URL="https://dlcdn.apache.org/zookeeper/zookeeper-${ZOOKEEPER_VERSION}/apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz"
 ARG ZOOKEEPER_BACKUP_DOWNLOAD_URL="https://archive.apache.org/dist/zookeeper/zookeeper-${ZOOKEEPER_VERSION}/apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz"
 
@@ -31,7 +30,7 @@ RUN	yum -y update && \
 		wget \
 	&& yum clean all
 
-ENV JAVA_HOME /usr/lib/jvm/java
+ENV JAVA_HOME=/usr/lib/jvm/java
 # Allow users to provide their own builds of Accumulo, ZooKeeper and Hadoop
 COPY ./files/ .
 # Otherwise, download official distributions
@@ -90,19 +89,17 @@ RUN cd /opt \
     && chown -h ${USER}:${GROUP} ./accumulo \
     && chown -h ${USER}:${GROUP} ./zookeeper \
 	&& usermod -d /opt/accumulo ${USER}
-
-
-RUN rm /opt/accumulo-${ACCUMULO_VERSION}/lib/commons-vfs2-2.9.0.jar
-ADD files/commons-vfs2-2.1.jar /opt/accumulo-${ACCUMULO_VERSION}/lib/commons-vfs2-2.1.jar
-RUN chmod 777 /opt/accumulo-${ACCUMULO_VERSION}/lib/commons-vfs2-2.1.jar
+	
+COPY ./entrypoint.sh /
+RUN chmod 777 /entrypoint.sh
 
 USER ${USER}
 
-ENV ACCUMULO_HOME /opt/accumulo
-ENV ACCUMULO_CONF_DIR ${ACCUMULO_HOME}/conf
-ENV ACCUMULO_LOG_DIR /var/log/accumulo
-ENV ZOOKEEPER_HOME /opt/zookeeper
-ENV PATH $ACCUMULO_HOME/bin:$PATH
+ENV ACCUMULO_HOME=/opt/accumulo
+ENV ACCUMULO_CONF_DIR=${ACCUMULO_HOME}/conf
+ENV ACCUMULO_LOG_DIR=/var/log/accumulo
+ENV ZOOKEEPER_HOME=/opt/zookeeper
+ENV PATH=$ACCUMULO_HOME/bin:$PATH
 ENV HADOOP_HOME=/usr/local/hadoop \
     HADOOP_COMMON_HOME=/usr/local/hadoop \
     HADOOP_HDFS_HOME=/usr/local/hadoop \
@@ -112,6 +109,6 @@ ENV HADOOP_HOME=/usr/local/hadoop \
     YARN_CONF_DIR=/usr/local/hadoop/etc/hadoop \
     JAVA_HOME=/usr/lib/jvm/java
 
-COPY ./entrypoint.sh /
+
 ENTRYPOINT ["/entrypoint.sh", "accumulo"]
 CMD ["help"]

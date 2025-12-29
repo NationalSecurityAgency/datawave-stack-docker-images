@@ -1,8 +1,10 @@
-FROM ghcr.io/nationalsecurityagency/datawave-stack-base:11
+ARG REGISTRY="ghcr.io/nationalsecurityagency/datawave"
+FROM ${REGISTRY}/datawave-stack-base:11
 
 # Add native libs
-ARG HADOOP_VERSION=3.3.6
-ADD bigtop.repo /etc/yum.repos.d/
+ARG HADOOP_VERSION=3.4.1
+ADD bigtop.repo /etc/yum.repos.d
+ADD artifactory.repo /etc/yum.repos.d/
 
 RUN yum clean all && \
     rm -rf /var/cache/yum && \

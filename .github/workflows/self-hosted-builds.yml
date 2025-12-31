@@ -1,7 +1,7 @@
 #
 name: Private Repo Push
 
-# Configures this workflow to run every time a change is pushed to the branch called `release`.
+# Configures this workflow to run every time a change is pushed to the branch called `main`. And to build on a schedule.
 on:
   push:
     branches: ['main']
@@ -9,7 +9,6 @@ on:
   schedule:
     - cron: "0 13 * * 1"
 
-# Defines two custom environment variables for the workflow. These are used for the Container registry domain, and a name for the Docker image that this workflow builds.
 env: 
   IMAGE_NAME: datawave-stack
   JAVA_VERSION: '11'
@@ -24,10 +23,6 @@ jobs:
       packages: write
       #
     steps:
-      - name: Update system cert trust
-        run: |
-           sudo cp /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem /etc/pki/ca-trust/source/anchors/
-           sudo update-ca-trust extract
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Set up Docker Buildx

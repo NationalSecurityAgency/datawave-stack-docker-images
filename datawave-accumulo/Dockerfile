@@ -1,9 +1,9 @@
+ARG REGISTRY="ghcr.io/nationalsecurityagency/datawave"
+ARG BUILDER_IMAGE_NAME=${REGISTRY}/datawave-stack-hadoop
 
-
-ARG BUILDER_IMAGE_NAME=ghcr.io/nationalsecurityagency/datawave-stack-hadoop
 ARG BUILDER_IMAGE_TAG=3.4.1
 
-ARG BASE_IMAGE_NAME=ghcr.io/nationalsecurityagency/datawave-stack-hadoop
+ARG BASE_IMAGE_NAME=${REGISTRY}/datawave-stack-hadoop
 ARG BASE_IMAGE_TAG=3.4.1
 
 ARG ACCUMULO_VERSION=2.1.4

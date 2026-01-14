@@ -1,10 +1,10 @@
 ARG REGISTRY="ghcr.io/nationalsecurityagency/datawave"
 ARG BUILDER_IMAGE_NAME=${REGISTRY}/datawave-stack-hadoop
 
-ARG BUILDER_IMAGE_TAG=3.4.1
+ARG BUILDER_IMAGE_TAG=3.4.2
 
 ARG BASE_IMAGE_NAME=${REGISTRY}/datawave-stack-hadoop
-ARG BASE_IMAGE_TAG=3.4.1
+ARG BASE_IMAGE_TAG=3.4.2
 
 ARG ACCUMULO_VERSION=2.1.4
 ARG ZOOKEEPER_VERSION=3.8.5
@@ -101,12 +101,6 @@ ENV ACCUMULO_LOG_DIR=/var/log/accumulo
 ENV ZOOKEEPER_HOME=/opt/zookeeper
 ENV PATH=$ACCUMULO_HOME/bin:$PATH
 ENV HADOOP_HOME=/usr/local/hadoop \
-    HADOOP_COMMON_HOME=/usr/local/hadoop \
-    HADOOP_HDFS_HOME=/usr/local/hadoop \
-    HADOOP_MAPRED_HOME=/usr/local/hadoop \
-    HADOOP_YARN_HOME=/usr/local/hadoop \
-    HADOOP_CONF_DIR=/usr/local/hadoop/etc/hadoop \
-    YARN_CONF_DIR=/usr/local/hadoop/etc/hadoop \
     JAVA_HOME=/usr/lib/jvm/java
 
 

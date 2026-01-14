@@ -51,12 +51,6 @@ RUN yum clean all && \
 USER hadoop
 
 ENV HADOOP_HOME=/usr/local/hadoop \
-    HADOOP_COMMON_HOME=/usr/local/hadoop \
-    HADOOP_HDFS_HOME=/usr/local/hadoop-hdfs \
-    HADOOP_MAPRED_HOME=/usr/local/hadoop-mapreduce \
-    HADOOP_YARN_HOME=/usr/local/hadoop-yarn \
-    HADOOP_CONF_DIR=/usr/local/hadoop/etc/hadoop \
-    YARN_CONF_DIR=/usr/local/hadoop-yarn/etc/hadoop \
     PATH=${PATH}:/usr/local/hadoop/bin:/usr/local/hadoop-hdfs/bin
 
 # Hdfs ports

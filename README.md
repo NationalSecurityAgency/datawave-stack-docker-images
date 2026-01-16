@@ -1,12 +1,6 @@
-<p align="center">
-  <img src="assets/banner.png" alt="Datawave Stack Banner" width="100%">
-</p>
-
 # Datawave Stack Docker Images
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Active](https://img.shields.io/badge/Status-Active-brightgreen.svg)]()
-[![Docker](https://img.shields.io/badge/Docker-Enabled-blue.svg)]()
 
 > **Streamlining Big Data Ingest and Querying**
 
@@ -40,15 +34,19 @@ graph TD
 ## 📦 Container Images
 
 ### [datawave-base](file:///Users/ismailtasdelen/Documents/GitHub/datawave-stack-docker-images/datawave-base)
+
 The foundational image for all other Datawave components. It provides common environment variables, dependencies, and OS-level configurations.
 
 ### [datawave-hadoop](file:///Users/ismailtasdelen/Documents/GitHub/datawave-stack-docker-images/datawave-hadoop)
+
 A pre-configured Hadoop environment tailored for Datawave. It includes Spark and other essential Big Data libraries.
 
 ### [datawave-accumulo](file:///Users/ismailtasdelen/Documents/GitHub/datawave-stack-docker-images/datawave-accumulo)
+
 The core storage and indexing engine. This image contains Apache Accumulo optimized for Datawave's unique indexing strategies.
 
 ### [mysqlsh-no-root](file:///Users/ismailtasdelen/Documents/GitHub/datawave-stack-docker-images/mysqlsh-no-root)
+
 A utility container providing the MySQL Shell in a rootless environment, useful for database management and integration tasks.
 
 ## 🚀 Getting Started
@@ -91,6 +89,4 @@ This project is licensed under the **Apache License 2.0**. See the [LICENSE](LIC
 
 ---
 
-<p align="center">
-  Made with ❤️ by the <b>NSA Open Source Community</b>
-</p>
+Made with ❤️ by the **NSA Open Source Community**

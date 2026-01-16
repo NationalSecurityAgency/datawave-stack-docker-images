@@ -84,10 +84,6 @@ We welcome contributions to the Datawave Stack Docker Images project! If you fin
 
 Contributions to this project are subject to the [official NSA contributing guidelines](https://github.com/NationalSecurityAgency/.github/blob/main/CONTRIBUTING.md).
 
-## 📄 License
-
-This project is licensed under the **Apache License 2.0**. See the [LICENSE](LICENSE) file for more information.
-
 ---
 
 Made with ❤️ by the **NSA Open Source Community**

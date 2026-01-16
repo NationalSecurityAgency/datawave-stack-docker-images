@@ -33,19 +33,19 @@ graph TD
 
 ## 📦 Container Images
 
-### [datawave-base](file:///Users/ismailtasdelen/Documents/GitHub/datawave-stack-docker-images/datawave-base)
+### [datawave-base](./datawave-base)
 
 The foundational image for all other Datawave components. It provides common environment variables, dependencies, and OS-level configurations.
 
-### [datawave-hadoop](file:///Users/ismailtasdelen/Documents/GitHub/datawave-stack-docker-images/datawave-hadoop)
+### [datawave-hadoop](./datawave-hadoop)
 
 A pre-configured Hadoop environment tailored for Datawave. It includes Spark and other essential Big Data libraries.
 
-### [datawave-accumulo](file:///Users/ismailtasdelen/Documents/GitHub/datawave-stack-docker-images/datawave-accumulo)
+### [datawave-accumulo](./datawave-accumulo)
 
 The core storage and indexing engine. This image contains Apache Accumulo optimized for Datawave's unique indexing strategies.
 
-### [mysqlsh-no-root](file:///Users/ismailtasdelen/Documents/GitHub/datawave-stack-docker-images/mysqlsh-no-root)
+### [mysqlsh-no-root](./mysqlsh-no-root)
 
 A utility container providing the MySQL Shell in a rootless environment, useful for database management and integration tasks.
 

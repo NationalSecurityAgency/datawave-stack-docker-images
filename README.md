@@ -52,6 +52,7 @@ A utility container providing the MySQL Shell in a rootless environment, useful 
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - Docker (v20.10+)
 - Docker Compose (v2.0+)
 
@@ -81,7 +82,7 @@ Each image is highly configurable via environment variables. Key configuration f
 
 We welcome contributions to the Datawave Stack Docker Images project! If you find a bug or have a feature request, please open an issue or submit a pull request.
 
-Please see the [CONTRIBUTING.md](.github/CONTRIBUTING.md) (if available) or refer to the [official NSA contributing guidelines](https://github.com/NationalSecurityAgency/.github/blob/main/CONTRIBUTING.md).
+Contributions to this project are subject to the [official NSA contributing guidelines](https://github.com/NationalSecurityAgency/.github/blob/main/CONTRIBUTING.md).
 
 ## 📄 License
 

@@ -1,0 +1,7 @@
+[Artifactory]
+name=Artifactory
+baseurl=https://datawave-token:${ARTIFACTORY_TOKEN}@artifactory.adv.evoforge.org/artifactory/dwp-rpm-local/el8/
+enabled=1
+gpgcheck=0
+sslverify=0
+EOF

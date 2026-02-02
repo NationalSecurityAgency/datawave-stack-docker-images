@@ -2,6 +2,7 @@ ARG REGISTRY="ghcr.io/nationalsecurityagency/datawave"
 FROM ${REGISTRY}/datawave-stack-base:11
 
 # Add native libs
+ADD bigtop.repo /etc/yum.repos.d/
 ADD artifactory.repo /etc/yum.repos.d/
 
 RUN yum clean all && \

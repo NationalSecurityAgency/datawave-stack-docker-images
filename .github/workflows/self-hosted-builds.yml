@@ -66,23 +66,38 @@ jobs:
           gpgcheck=0
           sslverify=0
           EOF
+      - name: Extract Hadoop Version
+        id: hadoop
+        run: |
+          VERSION=$(grep HADOOP_VERSION datawave-hadoop/Dockerfile | cut -d= -f2)
+          echo "VERSION=$VERSION"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
       - name: Build and push Docker hadoop image
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:
           context: datawave-hadoop/
           push: true
           load: true
-          tags: "${{ vars.SELF_HOSTED_REGISTRY }}/${{ env.IMAGE_NAME }}-hadoop:${{ github.ref_name  }}"
+          tags: "${{ vars.SELF_HOSTED_REGISTRY }}/${{ env.IMAGE_NAME }}-hadoop:${{ steps.hadoop.outputs.version  }}"
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             # Map a GitHub env var to a Docker build arg
             REGISTRY=${{ vars.SELF_HOSTED_REGISTRY }}
+      - name: Extract Accumulo and Zookeeper Versions
+        id: accumulo
+        run: |
+          VERSION=$(grep ACCUMULO_VERSION= datawave-accumulo/Dockerfile | cut -d= -f2)
+          echo "ACCUMULO_VERSION=$VERSION"
+          echo "accumulo=$VERSION" >> $GITHUB_OUTPUT
+          VERSION=$(grep ZOOKEEPER_VERSION= datawave-accumulo/Dockerfile | cut -d= -f2)
+          echo "ZOOKEEPER_VERSION=$VERSION"
+          echo "zookeeper=$VERSION" >> $GITHUB_OUTPUT
       - name: Build and push Docker accumulo image
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:
           context: datawave-accumulo/
           push: true
-          tags: "${{ vars.SELF_HOSTED_REGISTRY }}/${{ env.IMAGE_NAME }}-accumulo:${{ github.ref_name  }}"
+          tags: "${{ vars.SELF_HOSTED_REGISTRY }}/${{ env.IMAGE_NAME }}-accumulo:${{ steps.accumulo.outputs.accumulo }}-zk-${{ steps.accumulo.outputs.zookeeper }}"
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             # Map a GitHub env var to a Docker build arg

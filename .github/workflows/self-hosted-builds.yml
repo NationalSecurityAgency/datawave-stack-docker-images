@@ -48,7 +48,7 @@ jobs:
         with:
           context: datawave-base/
           push: false
-          tags: "${{ vars.SELF_HOSTED_REGISTRY }}/${{ env.IMAGE_NAME }}-base:${{ github.ref_name  }}"
+          tags: "${{ vars.SELF_HOSTED_REGISTRY }}/${{ env.IMAGE_NAME }}-base:11"
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             # Map a GitHub env var to a Docker build arg

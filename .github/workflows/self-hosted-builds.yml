@@ -89,7 +89,6 @@ jobs:
           fi
           echo "Extracted HADOOP_VERSION=$VERSION"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-          docker rmi "${{ vars.SELF_HOSTED_REGISTRY }}/${{ env.IMAGE_NAME }}-hadoop:temp"
 
       - name: Build and push Docker hadoop image with extracted version
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
@@ -134,7 +133,6 @@ jobs:
           echo "Extracted ZOOKEEPER_VERSION=$ZOOKEEPER_VERSION"
           echo "accumulo=$ACCUMULO_VERSION" >> $GITHUB_OUTPUT
           echo "zookeeper=$ZOOKEEPER_VERSION" >> $GITHUB_OUTPUT
-          docker rmi "${{ vars.SELF_HOSTED_REGISTRY }}/${{ env.IMAGE_NAME }}-accumulo:temp"
 
       - name: Build and push Docker accumulo image with extracted versions
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4

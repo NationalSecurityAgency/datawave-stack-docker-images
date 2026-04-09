@@ -116,12 +116,13 @@ jobs:
       - name: Extract Accumulo and Zookeeper versions from container
         id: accumulo
         run: |
-          ACCUMULO_VERSION=$(docker run --rm \
+          ACCUMULO_VERSION=$(docker run --rm --entrypoint bash \
             "${{ vars.SELF_HOSTED_REGISTRY }}/${{ env.IMAGE_NAME }}-accumulo:temp" \
-            bash -c "readlink /opt/accumulo | grep -oP '\d+\.\d+\.\d+'")
-          ZOOKEEPER_VERSION=$(docker run --rm \
+            -c "find /opt/accumulo/lib -maxdepth 1 -name 'accumulo-core-*.jar' | grep -oP '\d+\.\d+\.\d+'")
+
+          ZOOKEEPER_VERSION=$(docker run --rm --entrypoint bash \
             "${{ vars.SELF_HOSTED_REGISTRY }}/${{ env.IMAGE_NAME }}-accumulo:temp" \
-            bash -c "readlink /opt/zookeeper | grep -oP '\d+\.\d+\.\d+'")
+            -c "find /opt/zookeeper/lib -maxdepth 1 -name 'zookeeper-[0-9]*.jar' | grep -oP '\d+\.\d+\.\d+'")
           if [ -z "$ACCUMULO_VERSION" ]; then
             echo "ERROR: Could not extract Accumulo version" >&2
             exit 1

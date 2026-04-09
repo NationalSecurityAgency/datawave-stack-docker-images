@@ -117,12 +117,11 @@ jobs:
         id: accumulo
         run: |
           ACCUMULO_VERSION=$(docker run --rm \
-            -e HADOOP_CLASSPATH="/usr/local/hadoop/share/hadoop/common/*:/usr/local/hadoop/share/hadoop/common/lib/*" \
             "${{ vars.SELF_HOSTED_REGISTRY }}/${{ env.IMAGE_NAME }}-accumulo:temp" \
-            bash -c "accumulo version" 2>/dev/null | tr -d '[:space:]')
+            bash -c "readlink /opt/accumulo | grep -oP '\d+\.\d+\.\d+'")
           ZOOKEEPER_VERSION=$(docker run --rm \
             "${{ vars.SELF_HOSTED_REGISTRY }}/${{ env.IMAGE_NAME }}-accumulo:temp" \
-            bash -c "find /opt -maxdepth 1 -type d -name 'zookeeper-*' | grep -oP '\d+\.\d+\.\d+' | head -1")
+            bash -c "readlink /opt/zookeeper | grep -oP '\d+\.\d+\.\d+'")
           if [ -z "$ACCUMULO_VERSION" ]; then
             echo "ERROR: Could not extract Accumulo version" >&2
             exit 1

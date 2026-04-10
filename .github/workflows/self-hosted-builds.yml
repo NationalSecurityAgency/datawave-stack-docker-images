@@ -47,7 +47,7 @@ jobs:
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:
           context: datawave-base/
-          push: false
+          push: true
           tags: "${{ vars.SELF_HOSTED_REGISTRY }}/${{ env.IMAGE_NAME }}-base:11"
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |

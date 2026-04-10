@@ -94,7 +94,7 @@ jobs:
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:
           context: datawave-hadoop/
-          push: false
+          push: true
           load: true
           tags: "${{ vars.SELF_HOSTED_REGISTRY }}/${{ env.IMAGE_NAME }}-hadoop:${{ steps.hadoop.outputs.version }}"
           labels: ${{ steps.meta.outputs.labels }}
@@ -140,7 +140,7 @@ jobs:
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:
           context: datawave-accumulo/
-          push: false
+          push: true
           tags: "${{ vars.SELF_HOSTED_REGISTRY }}/${{ env.IMAGE_NAME }}-accumulo:${{ steps.accumulo.outputs.accumulo }}-zk-${{ steps.accumulo.outputs.zookeeper }}"
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |

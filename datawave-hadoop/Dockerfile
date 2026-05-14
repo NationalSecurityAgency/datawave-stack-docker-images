@@ -2,7 +2,7 @@ ARG REGISTRY="ghcr.io/nationalsecurityagency/datawave"
 FROM ${REGISTRY}/datawave-stack-base:11
 
 # Add native libs
-ARG HADOOP_VERSION=3.4.1
+ARG HADOOP_VERSION=3.4.2
 ADD bigtop.repo /etc/yum.repos.d
 ADD artifactory.repo /etc/yum.repos.d/
 

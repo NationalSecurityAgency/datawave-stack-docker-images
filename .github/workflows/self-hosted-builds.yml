@@ -48,7 +48,7 @@ jobs:
         with:
           context: datawave-base/
           push: true
-          tags: "${{ vars.SELF_HOSTED_REGISTRY }}/${{ env.IMAGE_NAME }}-base:${{ github.ref_name  }}"
+          tags: "${{ vars.SELF_HOSTED_REGISTRY }}/${{ env.IMAGE_NAME }}-base:11"
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             # Map a GitHub env var to a Docker build arg
@@ -70,20 +70,78 @@ jobs:
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:
           context: datawave-hadoop/
-          push: true
+          push: false
           load: true
-          tags: "${{ vars.SELF_HOSTED_REGISTRY }}/${{ env.IMAGE_NAME }}-hadoop:${{ github.ref_name  }}"
+          tags: "${{ vars.SELF_HOSTED_REGISTRY }}/${{ env.IMAGE_NAME }}-hadoop:temp"
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             # Map a GitHub env var to a Docker build arg
             REGISTRY=${{ vars.SELF_HOSTED_REGISTRY }}
+      - name: Extract Hadoop version from container
+        id: hadoop
+        run: |
+          # "hadoop version" typically outputs "Hadoop 3.3.6" on the first line
+          VERSION=$(docker run --rm "${{ vars.SELF_HOSTED_REGISTRY }}/${{ env.IMAGE_NAME }}-hadoop:temp" \
+            hadoop version 2>/dev/null | head -1 | awk '{print $2}')
+          if [ -z "$VERSION" ]; then
+            echo "ERROR: Could not extract Hadoop version" >&2
+            exit 1
+          fi
+          echo "Extracted HADOOP_VERSION=$VERSION"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Build and push Docker hadoop image with extracted version
+        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+        with:
+          context: datawave-hadoop/
+          push: true
+          load: true
+          tags: "${{ vars.SELF_HOSTED_REGISTRY }}/${{ env.IMAGE_NAME }}-hadoop:${{ steps.hadoop.outputs.version }}"
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+              REGISTRY=${{ vars.SELF_HOSTED_REGISTRY }}
+
       - name: Build and push Docker accumulo image
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:
           context: datawave-accumulo/
-          push: true
-          tags: "${{ vars.SELF_HOSTED_REGISTRY }}/${{ env.IMAGE_NAME }}-accumulo:${{ github.ref_name  }}"
+          push: false
+          load: true
+          tags: "${{ vars.SELF_HOSTED_REGISTRY }}/${{ env.IMAGE_NAME }}-accumulo:temp"
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             # Map a GitHub env var to a Docker build arg
+            REGISTRY=${{ vars.SELF_HOSTED_REGISTRY }}
+
+      - name: Extract Accumulo and Zookeeper versions from container
+        id: accumulo
+        run: |
+          ACCUMULO_VERSION=$(docker run --rm --entrypoint bash \
+            "${{ vars.SELF_HOSTED_REGISTRY }}/${{ env.IMAGE_NAME }}-accumulo:temp" \
+            -c "find /opt/accumulo/lib -maxdepth 1 -name 'accumulo-core-*.jar' | grep -oP '\d+\.\d+\.\d+'")
+
+          ZOOKEEPER_VERSION=$(docker run --rm --entrypoint bash \
+            "${{ vars.SELF_HOSTED_REGISTRY }}/${{ env.IMAGE_NAME }}-accumulo:temp" \
+            -c "find /opt/zookeeper/lib -maxdepth 1 -name 'zookeeper-[0-9]*.jar' | grep -oP '\d+\.\d+\.\d+'")
+          if [ -z "$ACCUMULO_VERSION" ]; then
+            echo "ERROR: Could not extract Accumulo version" >&2
+            exit 1
+          fi
+          if [ -z "$ZOOKEEPER_VERSION" ]; then
+            echo "ERROR: Could not extract Zookeeper version" >&2
+            exit 1
+          fi
+          echo "Extracted ACCUMULO_VERSION=$ACCUMULO_VERSION"
+          echo "Extracted ZOOKEEPER_VERSION=$ZOOKEEPER_VERSION"
+          echo "accumulo=$ACCUMULO_VERSION" >> $GITHUB_OUTPUT
+          echo "zookeeper=$ZOOKEEPER_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Build and push Docker accumulo image with extracted versions
+        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+        with:
+          context: datawave-accumulo/
+          push: true
+          tags: "${{ vars.SELF_HOSTED_REGISTRY }}/${{ env.IMAGE_NAME }}-accumulo:${{ steps.accumulo.outputs.accumulo }}-zk-${{ steps.accumulo.outputs.zookeeper }}"
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
             REGISTRY=${{ vars.SELF_HOSTED_REGISTRY }}

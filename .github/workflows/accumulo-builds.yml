@@ -37,7 +37,7 @@ jobs:
       with:
         repository: ${{ github.event.client_payload.accumuloRepo  || github.event.inputs.accumuloRepo || 'apache/accumulo' }}
         path: accumulo
-        ref: ${{ github.event.client_payload.accumuloBranch || github.event.inputs.accumuloBranch || '2.1' }}
+        ref: ${{ github.event.client_payload.accumuloBranch || github.event.inputs.accumuloBranch || 'main' }}
 
     - name: Set up JDK ${{env.JAVA_VERSION}}
       uses: actions/setup-java@v3

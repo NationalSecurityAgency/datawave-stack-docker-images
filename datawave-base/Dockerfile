@@ -8,7 +8,7 @@ RUN rpm --import https://yum.corretto.aws/corretto.key && \
     curl -L -o /etc/yum.repos.d/corretto.repo https://yum.corretto.aws/corretto.repo  && \
     rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm && \
     yum update -y  && \
-    yum install -y java-11-amazon-corretto-devel \
+    yum install -y java-17-amazon-corretto-devel \
     gcc-c++ \
     make \
     ncurses \

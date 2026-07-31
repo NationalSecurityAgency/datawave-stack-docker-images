@@ -1,0 +1,56 @@
+#
+name: Create packages 
+
+# Defines two custom environment variables for the workflow. These are used for the Container registry domain, and a name for the Docker image that this workflow builds.
+env:
+  REGISTRY: ghcr.io/nationalsecurityagency
+  IMAGE_NAME: datawave-stack
+  JAVA_VERSION: '11'
+  JAVA_DISTRIBUTION: 'zulu' #This is the default on v1 of the action for 1.8
+on:
+  workflow_dispatch:
+    inputs:
+      matrix_input:
+        description: "Comma separated list of package names to create"
+        required: true
+
+jobs:
+    prepare_matrix:
+      runs-on: ubuntu-latest
+      steps:
+        - id: split_matrix
+          name: "Split matrix"
+          shell: bash
+          run: |
+            input=${{ inputs.matrix_input }}
+            echo "matrix=[\"${input//,/\",\"}\"]" >> $GITHUB_OUTPUT
+    create_packages:
+      runs-on: ubuntu-latest
+      needs: prepare_matrix
+      strategy:
+        matrix: 
+          image: ${{ fromJson(needs.prepare_matrix.split_matrix.outputs.matrix) }}
+      permissions:
+        contents: read
+        packages: write
+      steps:
+        # Checkout repository so we have something to build
+        - name: Checkout repository
+          uses: actions/checkout@v4
+        # Log in to registry
+        - name: Log in to the Container registry
+          uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+          with:
+            registry: ${{ env.REGISTRY }}
+            username: ${{ github.actor }}
+            password: ${{ secrets.GITHUB_TOKEN }}
+        - name: Push images to create packages for the ones i dont have access to create
+          uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+          with:
+            context: datawave-base
+            push: true
+            tags: ${{ env.REGISTRY }}/${{ matrix.image}}:${{ github.ref_name  }}
+
+          
+
+    

@@ -46,7 +46,8 @@ RUN yum clean all && \
     chown hdfs:hdfs -R /var/log/hadoop* && \
     chmod 777 -R /etc/hadoop/ && \
     chmod 777 -R /opt/hdfs/hadoop-yarn && \
-    rm -Rf /usr/lib/hadoop/tools
+    rm -Rf /usr/lib/hadoop/tools && \
+    rm -Rf /etc/yum.repos.d/artifactory.repo
 
 USER hadoop
 

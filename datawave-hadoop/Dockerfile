@@ -1,5 +1,5 @@
 ARG REGISTRY="ghcr.io/nationalsecurityagency/datawave"
-FROM ${REGISTRY}/datawave-stack-base:11
+FROM ${REGISTRY}/datawave-stack-base:main
 
 # Add native libs
 ARG HADOOP_VERSION=3.4.1

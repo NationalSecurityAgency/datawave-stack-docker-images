@@ -1,4 +1,4 @@
-ARG REGISTRY="ghcr.io/nationalsecurityagency/datawave"
+ARG REGISTRY="ghcr.io/nationalsecurityagency/
 FROM ${REGISTRY}/datawave-stack-base:main
 
 # Add native libs

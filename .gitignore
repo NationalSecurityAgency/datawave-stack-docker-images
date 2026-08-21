@@ -1,1 +1,6 @@
 datawave-hadoop/artifactory.repo
+
+.idea
+*.iml
+*.iws
+*.ipr

@@ -21,3 +21,9 @@ RUN rpm --import https://yum.corretto.aws/corretto.key && \
 
 ENV JAVA_HOME=/usr/lib/jvm/java
 
+# Generate the manifest of installed RPMs
+RUN rpm -qa | sort > /rpm-manifest.txt
+
+# Display Manifest during build
+RUN cat /rpm-manifest.txt
+

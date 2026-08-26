@@ -93,6 +93,12 @@ RUN cd /opt \
 COPY ./entrypoint.sh /
 RUN chmod 777 /entrypoint.sh
 
+# Generate the manifest of installed RPMs
+RUN rpm -qa | sort > /rpm-manifest.txt
+
+# Display Manifest during build
+RUN cat /rpm-manifest.txt
+
 USER ${USER}
 
 ENV ACCUMULO_HOME=/opt/accumulo

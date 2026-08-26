@@ -2,8 +2,7 @@ ARG REGISTRY="ghcr.io/nationalsecurityagency"
 FROM ${REGISTRY}/datawave-stack-base:main
 
 # Add native libs
-ARG HADOOP_VERSION=3.4.1
-ADD bigtop.repo /etc/yum.repos.d
+ADD bigtop.repo /etc/yum.repos.d/
 ADD artifactory.repo /etc/yum.repos.d/
 
 RUN yum clean all && \
@@ -48,6 +47,12 @@ RUN yum clean all && \
     chmod 777 -R /opt/hdfs/hadoop-yarn && \
     rm -Rf /usr/lib/hadoop/tools && \
     rm -Rf /etc/yum.repos.d/artifactory.repo
+
+# Generate the manifest of installed RPMs
+RUN rpm -qa | sort > /rpm-manifest.txt
+
+# Display Manifest during build
+RUN cat /rpm-manifest.txt
 
 USER hadoop
 

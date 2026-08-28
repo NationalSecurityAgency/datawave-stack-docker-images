@@ -4,7 +4,6 @@ FROM ${REGISTRY}/datawave-stack-base:17
 # Add native libs
 ARG HADOOP_VERSION=3.5.0
 ADD bigtop.repo /etc/yum.repos.d
-ADD artifactory.repo /etc/yum.repos.d/
 
 RUN yum clean all && \
     rm -rf /var/cache/yum && \

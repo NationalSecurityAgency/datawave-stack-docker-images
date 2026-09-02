@@ -2,6 +2,16 @@
 
 test -z "${ACCUMULO_INSTANCE_NAME}" && ACCUMULO_INSTANCE_NAME="dev"
 
+# If ACCUMULO_LIB_EXT is a directory, copy any jars therein to /opt/accumulo/lib.
+if [ "$1" = "accumulo" ] && [ -v ACCUMULO_LIB_EXT ]; then
+  if [ -d "${ACCUMULO_LIB_EXT}" ]; then
+    echo "Copying jars (without overwrite) from ${ACCUMULO_LIB_EXT} to /opt/accumulo/lib"
+    cp --preserve --no-clobber "${ACCUMULO_LIB_EXT}"/*.jar /opt/accumulo/lib
+  else
+    echo "${ACCUMULO_LIB_EXT} does not exist, unable to copy additional jars to /opt/accumulo/lib"
+  fi
+fi
+
 if [ "$1" = "accumulo" ] && { [ "$2" = "manager" ]; }; then
 	# Try to find desired root password from trace config
 	TRACE_USER=root
@@ -20,7 +30,7 @@ if [ "$1" = "accumulo" ] && { [ "$2" = "manager" ]; }; then
 	# If possible, wait until all the HDFS instances that Accumulo will be using are available i.e. not in Safe Mode and directory is writeable
 	ACCUMULO_VOLUMES="hdfs://hdfs-nn:9000/accumulo"
 	if [ ! -z "${ACCUMULO_VOLUMES}" ]; then
-		
+
 		until [ "${ALL_VOLUMES_READY}" == "true" ] || [ $(( ATTEMPTS++ )) -gt 6 ]; do
 			echo "$(date) - Waiting for all HDFS instances to be ready..."
 			ALL_VOLUMES_READY="true"

@@ -12,7 +12,7 @@ Builds the datawave-stack images locally in a pre-defined order.
 Images:
   base        Builds the datawave-base image
   hadoop      Builds the datawave-hadoop image
-  accumulo    Builds the accumulo image
+  accumulo    Builds the datawave-accumulo image
   all         Builds the base, hadoop, and accumulo images
 
 Options:

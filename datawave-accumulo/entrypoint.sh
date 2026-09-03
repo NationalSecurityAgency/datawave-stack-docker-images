@@ -55,7 +55,7 @@ if [ "$1" = "accumulo" ] && { [ "$2" = "manager" ]; }; then
 	echo "Initializing Accumulo..."
 	ALREADY_INIT=`/opt/accumulo/bin/accumulo org.apache.accumulo.server.util.ListInstances | grep ${ACCUMULO_INSTANCE_NAME}|wc -l`
 	echo "Checked init. Was: ${ALREADY_INIT}"
-	[ $ALREADY_INIT -eq 0 ] && echo "Initializing" && accumulo init --instance-name ${ACCUMULO_INSTANCE_NAME} --password ${PASSWORD}
+	[ $ALREADY_INIT -eq 0 ] && echo "Initializing" && accumulo inst init --instance-name ${ACCUMULO_INSTANCE_NAME} --password ${PASSWORD}
 fi
 
 exec /usr/bin/dumb-init -- "$@"

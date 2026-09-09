@@ -92,6 +92,25 @@ RUN cd /opt \
   && chown -h ${USER}:${GROUP} ./zookeeper \
 	&& usermod -d /opt/accumulo ${USER}
 
+# The ZooKeeper tarball ships no zoo.cfg, and the compose service still starts
+# with --config /etc/zookeeper/conf.dist, which is bigtop's. That file has no
+# 4lw.commands.whitelist, and ZooKeeper 3.9 disables four-letter words by
+# default - so the compose healthcheck's `ruok` is refused once the server is
+# genuinely 3.9.x, and zookeeper never reports healthy. Ship a config that
+# enables the commands the healthcheck and operators actually use.
+RUN mkdir -p /opt/zookeeper-${ZOOKEEPER_VERSION}/conf \
+	&& printf '%s\n' \
+	'tickTime=2000' \
+	'initLimit=10' \
+	'syncLimit=5' \
+	'maxClientCnxns=50' \
+	'clientPort=2181' \
+	'dataDir=/var/lib/zookeeper' \
+	'admin.enableServer=false' \
+	'4lw.commands.whitelist=ruok,srvr,conf,stat,mntr' \
+	> /opt/zookeeper-${ZOOKEEPER_VERSION}/conf/zoo.cfg \
+	&& chmod -R a+rX /opt/zookeeper-${ZOOKEEPER_VERSION}
+
 COPY ./entrypoint.sh /
 RUN chmod 777 /entrypoint.sh
 

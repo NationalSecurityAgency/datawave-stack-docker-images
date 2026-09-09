@@ -31,32 +31,34 @@ RUN	yum -y update && \
 	&& yum clean all
 
 ENV JAVA_HOME=/usr/lib/jvm/java
-# Allow users to provide their own builds of Accumulo, ZooKeeper and Hadoop
+
+# Allow users to provide their own builds of Accumulo and ZooKeeper.
 COPY ./files/ .
+
 # Otherwise, download official distributions
 RUN cd / && \
-    if [ ! -f "./accumulo-${ACCUMULO_VERSION}-bin.tar.gz" ]; then \
-		  (wget -nv -O ./accumulo-${ACCUMULO_VERSION}-bin.tar.gz ${ACCUMULO_DOWNLOAD_URL} || wget -nv -O ./accumulo-${ACCUMULO_VERSION}-bin.tar.gz ${ACCUMULO_BACKUP_DOWNLOAD_URL}); \
-		fi
+  if [ ! -f "./accumulo-${ACCUMULO_VERSION}-bin.tar.gz" ]; then \
+	 (wget -nv -O ./accumulo-${ACCUMULO_VERSION}-bin.tar.gz ${ACCUMULO_DOWNLOAD_URL} || wget -nv -O ./accumulo-${ACCUMULO_VERSION}-bin.tar.gz ${ACCUMULO_BACKUP_DOWNLOAD_URL}); \
+	fi
 RUN cd / && \
 	if [ ! -f "./apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz" ]; then \
 		(wget -nv -O ./apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz ${ZOOKEEPER_DOWNLOAD_URL} || wget -nv -O ./apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz ${ZOOKEEPER_BACKUP_DOWNLOAD_URL}); \
 	fi
 
-# Extract required files
+# Extract the Accumulo libraries and scripts, delete the tarbell, and compile the native map library.
 RUN cd / && \
-    tar -xf ./accumulo-${ACCUMULO_VERSION}-bin.tar.gz accumulo-${ACCUMULO_VERSION}/bin/ accumulo-${ACCUMULO_VERSION}/lib/ && \
-	rm -f ./accumulo-${ACCUMULO_VERSION}-bin.tar.gz && \
-	accumulo-${ACCUMULO_VERSION}/bin/accumulo-util build-native
+  tar -xf ./accumulo-${ACCUMULO_VERSION}-bin.tar.gz accumulo-${ACCUMULO_VERSION}/bin/ accumulo-${ACCUMULO_VERSION}/lib/ && \
+  rm -f ./accumulo-${ACCUMULO_VERSION}-bin.tar.gz && \
+  accumulo-${ACCUMULO_VERSION}/bin/accumulo-util build-native
 
+# Extract the Zookeeper libraries and scripts and delete the tarbell.
 RUN \
-	rm -rf ./hadoop-${HADOOP_VERSION}/share/hadoop/yarn && \
-	tar -xf ./apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz --wildcards "apache-zookeeper-${ZOOKEEPER_VERSION}-bin/lib/zookeeper*.jar" && \
+  tar -xf ./apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz apache-zookeeper-${ZOOKEEPER_VERSION}-bin/lib/ && \
+  tar -xf ./apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz --wildcards "apache-zookeeper-${ZOOKEEPER_VERSION}-bin/bin/*.sh" && \
 	rm -f ./apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz
 
-RUN cd / && pwd && ls -al
-
 FROM ${BASE_IMAGE_NAME}:${BASE_IMAGE_TAG}
+
 ARG ACCUMULO_VERSION
 ARG ZOOKEEPER_VERSION
 ARG USER=accumulo
@@ -66,7 +68,7 @@ USER root
 
 RUN yum -y update && \
 	yum -y install \
-		wget \
+	wget \
 	&& yum clean all
 RUN wget -O /usr/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.5/dumb-init_1.2.5_x86_64
 RUN chmod +x /usr/bin/dumb-init
@@ -86,8 +88,8 @@ RUN cd /opt \
 	&& chown ${USER}:${GROUP} /var/log/accumulo \
 	&& chown -LR ${USER}:${GROUP} ./accumulo \
 	&& chown -LR ${USER}:${GROUP} ./zookeeper \
-    && chown -h ${USER}:${GROUP} ./accumulo \
-    && chown -h ${USER}:${GROUP} ./zookeeper \
+  && chown -h ${USER}:${GROUP} ./accumulo \
+  && chown -h ${USER}:${GROUP} ./zookeeper \
 	&& usermod -d /opt/accumulo ${USER}
 
 COPY ./entrypoint.sh /
@@ -100,8 +102,8 @@ ENV ACCUMULO_CONF_DIR=${ACCUMULO_HOME}/conf
 ENV ACCUMULO_LOG_DIR=/var/log/accumulo
 ENV ZOOKEEPER_HOME=/opt/zookeeper
 ENV PATH=$ACCUMULO_HOME/bin:$PATH
-ENV HADOOP_HOME=/usr/local/hadoop \
-    JAVA_HOME=/usr/lib/jvm/java
+ENV HADOOP_HOME=/usr/local/hadoop
+ENV JAVA_HOME=/usr/lib/jvm/java
 
 
 ENTRYPOINT ["/entrypoint.sh", "accumulo"]

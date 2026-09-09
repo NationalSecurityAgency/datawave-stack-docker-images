@@ -51,7 +51,7 @@ RUN cd / && \
 
 RUN \
 	rm -rf ./hadoop-${HADOOP_VERSION}/share/hadoop/yarn && \
-	tar -xf ./apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz --wildcards "apache-zookeeper-${ZOOKEEPER_VERSION}-bin/lib/zookeeper*.jar" && \
+	tar -xf ./apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz && \
 	rm -f ./apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz
 
 RUN cd / && pwd && ls -al
@@ -89,6 +89,22 @@ RUN cd /opt \
     && chown -h ${USER}:${GROUP} ./accumulo \
     && chown -h ${USER}:${GROUP} ./zookeeper \
 	&& usermod -d /opt/accumulo ${USER}
+
+# The ZooKeeper distribution ships no zoo.cfg, and Accumulo 4 requires a server
+# that understands addWatch (opcode 106, ZooKeeper 3.6+). Write a config for the
+# 3.9.x server here so the compose stack can run it instead of the much older
+# bigtop server that yum installs at /usr/lib/zookeeper.
+RUN printf '%s\n' \
+	'tickTime=2000' \
+	'initLimit=10' \
+	'syncLimit=5' \
+	'maxClientCnxns=50' \
+	'clientPort=2181' \
+	'dataDir=/var/lib/zookeeper' \
+	'admin.enableServer=false' \
+	'4lw.commands.whitelist=ruok,srvr,conf,stat,mntr' \
+	> /opt/zookeeper-${ZOOKEEPER_VERSION}/conf/zoo.cfg \
+	&& chmod -R a+rX /opt/zookeeper-${ZOOKEEPER_VERSION}
 
 COPY ./entrypoint.sh /
 RUN chmod 777 /entrypoint.sh

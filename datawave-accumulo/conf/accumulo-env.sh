@@ -95,7 +95,7 @@ case "${ACCUMULO_RESOURCE_GROUP:-default}" in
     # $cmd is exported in the accumulo script, but not the accumulo-service script
     case "$cmd" in
       manager) JAVA_OPTS=('-Xmx512m' '-Xms512m' "${JAVA_OPTS[@]}") ;;
-      monitor) JAVA_OPTS=('-Xmx256m' '-Xms256m' "${JAVA_OPTS[@]}") ;;
+      monitor) JAVA_OPTS=('-Xmx1g' '-Xms1g' "${JAVA_OPTS[@]}") ;;
       gc) JAVA_OPTS=('-Xmx256m' '-Xms256m' "${JAVA_OPTS[@]}") ;;
       tserver) JAVA_OPTS=('-Xmx768m' '-Xms768m' "${JAVA_OPTS[@]}") ;;
       compactor) JAVA_OPTS=('-Xmx256m' '-Xms256m' "${JAVA_OPTS[@]}") ;;

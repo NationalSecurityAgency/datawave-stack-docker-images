@@ -53,7 +53,7 @@ RUN cd / && \
 
 # Extract the Zookeeper libraries and scripts and delete the tarbell.
 RUN \
-  tar -xf ./apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz apache-zookeeper-${ZOOKEEPER_VERSION}-bin/lib/ && \
+  tar -xf ./apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz apache-zookeeper-${ZOOKEEPER_VERSION}-bin/lib/ apache-zookeeper-${ZOOKEEPER_VERSION}-bin/conf && \
   tar -xf ./apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz --wildcards "apache-zookeeper-${ZOOKEEPER_VERSION}-bin/bin/*.sh" && \
 	rm -f ./apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz
 
@@ -75,8 +75,9 @@ RUN chmod +x /usr/bin/dumb-init
 
 RUN cd /
 COPY --from=builder /accumulo-${ACCUMULO_VERSION} /opt/accumulo-${ACCUMULO_VERSION}/
-COPY ./conf /opt/accumulo-${ACCUMULO_VERSION}/conf
+COPY ./accumulo/conf /opt/accumulo-${ACCUMULO_VERSION}/conf
 COPY --from=builder /apache-zookeeper-${ZOOKEEPER_VERSION}-bin /opt/zookeeper-${ZOOKEEPER_VERSION}/
+COPY ./zookeeper/conf /opt/zookeeper-${ZOOKEEPER_VERSION}/conf
 
 RUN groupadd ${GROUP} && useradd --gid ${GROUP} -G hadoop --no-create-home --shell /bin/bash ${USER}
 
@@ -91,25 +92,6 @@ RUN cd /opt \
   && chown -h ${USER}:${GROUP} ./accumulo \
   && chown -h ${USER}:${GROUP} ./zookeeper \
 	&& usermod -d /opt/accumulo ${USER}
-
-# The ZooKeeper tarball ships no zoo.cfg, and the compose service still starts
-# with --config /etc/zookeeper/conf.dist, which is bigtop's. That file has no
-# 4lw.commands.whitelist, and ZooKeeper 3.9 disables four-letter words by
-# default - so the compose healthcheck's `ruok` is refused once the server is
-# genuinely 3.9.x, and zookeeper never reports healthy. Ship a config that
-# enables the commands the healthcheck and operators actually use.
-RUN mkdir -p /opt/zookeeper-${ZOOKEEPER_VERSION}/conf \
-	&& printf '%s\n' \
-	'tickTime=2000' \
-	'initLimit=10' \
-	'syncLimit=5' \
-	'maxClientCnxns=50' \
-	'clientPort=2181' \
-	'dataDir=/var/lib/zookeeper' \
-	'admin.enableServer=false' \
-	'4lw.commands.whitelist=ruok,srvr,conf,stat,mntr' \
-	> /opt/zookeeper-${ZOOKEEPER_VERSION}/conf/zoo.cfg \
-	&& chmod -R a+rX /opt/zookeeper-${ZOOKEEPER_VERSION}
 
 COPY ./entrypoint.sh /
 RUN chmod 777 /entrypoint.sh

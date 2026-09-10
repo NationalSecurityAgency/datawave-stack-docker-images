@@ -12,7 +12,10 @@ if [ "$1" = "accumulo" ] && [ -v ACCUMULO_LIB_EXT ]; then
   fi
 fi
 
-if [ "$1" = "accumulo" ] && { [ "$2" = "manager" ]; }; then
+# Accumulo 4 moved the server processes under `accumulo proc <name>`, so the
+# manager arrives as "accumulo proc manager" rather than "accumulo manager".
+# Match either form so initialization still runs on the manager only.
+if [ "$1" = "accumulo" ] && { [ "$2" = "manager" ] || { [ "$2" = "proc" ] && [ "$3" = "manager" ]; }; }; then
 	# Try to find desired root password from trace config
 	TRACE_USER=root
 	CLIENT_USERNAME=root

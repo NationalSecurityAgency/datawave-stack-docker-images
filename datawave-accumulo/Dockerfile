@@ -53,7 +53,7 @@ RUN cd / && \
 
 # Extract the Zookeeper libraries and scripts and delete the tarbell.
 RUN \
-  tar -xf ./apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz apache-zookeeper-${ZOOKEEPER_VERSION}-bin/lib/ && \
+  tar -xf ./apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz apache-zookeeper-${ZOOKEEPER_VERSION}-bin/lib/ apache-zookeeper-${ZOOKEEPER_VERSION}-bin/conf && \
   tar -xf ./apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz --wildcards "apache-zookeeper-${ZOOKEEPER_VERSION}-bin/bin/*.sh" && \
 	rm -f ./apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz
 
@@ -75,8 +75,9 @@ RUN chmod +x /usr/bin/dumb-init
 
 RUN cd /
 COPY --from=builder /accumulo-${ACCUMULO_VERSION} /opt/accumulo-${ACCUMULO_VERSION}/
-COPY ./conf /opt/accumulo-${ACCUMULO_VERSION}/conf
+COPY ./accumulo/conf /opt/accumulo-${ACCUMULO_VERSION}/conf
 COPY --from=builder /apache-zookeeper-${ZOOKEEPER_VERSION}-bin /opt/zookeeper-${ZOOKEEPER_VERSION}/
+COPY ./zookeeper/conf /opt/zookeeper-${ZOOKEEPER_VERSION}/conf
 
 RUN groupadd ${GROUP} && useradd --gid ${GROUP} -G hadoop --no-create-home --shell /bin/bash ${USER}
 

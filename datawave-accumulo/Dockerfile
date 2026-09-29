@@ -1,4 +1,4 @@
-ARG REGISTRY="ghcr.io/nationalsecurityagency/datawave"
+ARG REGISTRY="ghcr.io/nationalsecurityagency"
 ARG BUILDER_IMAGE_NAME=${REGISTRY}/datawave-stack-hadoop
 
 ARG BUILDER_IMAGE_TAG=main
@@ -31,8 +31,10 @@ RUN	yum -y update && \
 	&& yum clean all
 
 ENV JAVA_HOME=/usr/lib/jvm/java
-# Allow users to provide their own builds of Accumulo, ZooKeeper and Hadoop
+
+# Allow users to provide their own builds of Accumulo and ZooKeeper.
 COPY ./files/ .
+
 # Otherwise, download official distributions
 RUN cd / && \
     if [ ! -f "./accumulo-${ACCUMULO_VERSION}-bin.tar.gz" ]; then \
@@ -49,11 +51,13 @@ RUN cd / && \
 	rm -f ./accumulo-${ACCUMULO_VERSION}-bin.tar.gz && \
 	accumulo-${ACCUMULO_VERSION}/bin/accumulo-util build-native
 
+# Extract the Zookeeper libraries and scripts and delete the tarbell.
 RUN \
-	rm -rf ./hadoop-${HADOOP_VERSION}/share/hadoop/yarn && \
-	tar -xf ./apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz --wildcards "apache-zookeeper-${ZOOKEEPER_VERSION}-bin/lib/zookeeper*.jar" && \
+  rm -rf ./hadoop-${HADOOP_VERSION}/share/hadoop/yarn && \
+  tar -xf ./apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz apache-zookeeper-${ZOOKEEPER_VERSION}-bin/lib/ && \
+  tar -xf ./apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz --wildcards "apache-zookeeper-${ZOOKEEPER_VERSION}-bin/bin/*.sh" && \
 	rm -f ./apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz
-	
+
 RUN cd / && pwd && ls -al
 
 FROM ${BASE_IMAGE_NAME}:${BASE_IMAGE_TAG}
@@ -89,7 +93,7 @@ RUN cd /opt \
     && chown -h ${USER}:${GROUP} ./accumulo \
     && chown -h ${USER}:${GROUP} ./zookeeper \
 	&& usermod -d /opt/accumulo ${USER}
-	
+
 COPY ./entrypoint.sh /
 RUN chmod 777 /entrypoint.sh
 

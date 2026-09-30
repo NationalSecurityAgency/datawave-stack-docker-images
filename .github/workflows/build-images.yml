@@ -19,7 +19,7 @@ jobs:
     strategy:
       matrix:
         value:
-          - datawave/annotation-service:1.0.0-SNAPSHOT
+          - datawave/annotation-service
     # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
     permissions:
       contents: read

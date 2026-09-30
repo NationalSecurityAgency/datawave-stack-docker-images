@@ -58,7 +58,7 @@ build_hadoop() {
 }
 
 build_accumulo() {
-  build_image "datawave-accumulo" "ghcr.io/nationalsecurityagency/datawave-stack-accumulo:4.0.0-SNAPSHOT"
+  build_image "datawave-accumulo" "ghcr.io/nationalsecurityagency/datawave-stack-accumulo:4.0.0-alpha-1"
 }
 
 build_image() {

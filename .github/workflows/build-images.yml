@@ -9,7 +9,7 @@ on:
 # Defines two custom environment variables for the workflow. These are used for the Container registry domain, and a name for the Docker image that this workflow builds.
 env:
   REGISTRY: ghcr.io/nationalsecurityagency
-  IMAGE_NAME: datawave/annotation-service
+  IMAGE_NAME: datawave/annotation-cache-service
   JAVA_VERSION: '11'
   JAVA_DISTRIBUTION: 'zulu' #This is the default on v1 of the action for 1.8
 
@@ -19,7 +19,7 @@ jobs:
     strategy:
       matrix:
         value:
-          - datawave/annotation-service
+          - datawave/annotation-cache-service
     # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
     permissions:
       contents: read

@@ -9,9 +9,9 @@ on:
   schedule:
     - cron: "0 13 * * 1"
 
-env: 
+env:
   IMAGE_NAME: datawave-stack
-  JAVA_VERSION: '11'
+  JAVA_VERSION: '17'
   JAVA_DISTRIBUTION: 'zulu' #This is the default on v1 of the action for 1.8
 
 jobs:

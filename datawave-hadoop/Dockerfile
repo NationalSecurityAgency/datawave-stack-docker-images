@@ -1,10 +1,9 @@
 ARG REGISTRY="ghcr.io/nationalsecurityagency"
-FROM ${REGISTRY}/datawave-stack-base:main
+FROM ${REGISTRY}/datawave-stack-base:main-java17
 
 # Add native libs
 ARG HADOOP_VERSION=3.4.1
 ADD bigtop.repo /etc/yum.repos.d
-ADD artifactory.repo /etc/yum.repos.d/
 
 RUN yum clean all && \
     rm -rf /var/cache/yum && \
@@ -46,8 +45,7 @@ RUN yum clean all && \
     chown hdfs:hdfs -R /var/log/hadoop* && \
     chmod 777 -R /etc/hadoop/ && \
     chmod 777 -R /opt/hdfs/hadoop-yarn && \
-    rm -Rf /usr/lib/hadoop/tools && \
-    rm -Rf /etc/yum.repos.d/artifactory.repo
+    rm -Rf /usr/lib/hadoop/tools
 
 USER hadoop
 

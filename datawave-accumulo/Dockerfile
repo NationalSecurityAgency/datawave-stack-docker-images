@@ -1,4 +1,4 @@
-ARG REGISTRY="ghcr.io/nationalsecurityagency/datawave"
+ARG REGISTRY="ghcr.io/nationalsecurityagency"
 ARG BUILDER_IMAGE_NAME=${REGISTRY}/datawave-stack-hadoop
 
 ARG BUILDER_IMAGE_TAG=main
@@ -53,7 +53,7 @@ RUN \
 	rm -rf ./hadoop-${HADOOP_VERSION}/share/hadoop/yarn && \
 	tar -xf ./apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz --wildcards "apache-zookeeper-${ZOOKEEPER_VERSION}-bin/lib/zookeeper*.jar" && \
 	rm -f ./apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz
-	
+
 RUN cd / && pwd && ls -al
 
 FROM ${BASE_IMAGE_NAME}:${BASE_IMAGE_TAG}
@@ -89,7 +89,7 @@ RUN cd /opt \
     && chown -h ${USER}:${GROUP} ./accumulo \
     && chown -h ${USER}:${GROUP} ./zookeeper \
 	&& usermod -d /opt/accumulo ${USER}
-	
+
 COPY ./entrypoint.sh /
 RUN chmod 777 /entrypoint.sh
 

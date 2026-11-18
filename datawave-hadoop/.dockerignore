@@ -1,0 +1,4 @@
+**
+!Dockerfile
+!bigtop.repo
+# Supply artifactory.repo with --secret; never include it in the context.

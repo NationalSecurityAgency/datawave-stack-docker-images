@@ -29,6 +29,8 @@ jobs:
         uses: docker/setup-buildx-action@v3
         with:
           driver: docker
+      - name: Verify Hadoop build context
+        run: python3 scripts/check-hadoop-build-context.py
       - name: Log in to the Container registry
         uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
         with:
@@ -74,6 +76,8 @@ jobs:
           load: true
           tags: "${{ vars.SELF_HOSTED_REGISTRY }}/${{ env.IMAGE_NAME }}-hadoop:${{ github.ref_name  }}"
           labels: ${{ steps.meta.outputs.labels }}
+          secret-files: |
+            artifactory_repo=datawave-hadoop/artifactory.repo
           build-args: |
             # Map a GitHub env var to a Docker build arg
             REGISTRY=${{ vars.SELF_HOSTED_REGISTRY }}

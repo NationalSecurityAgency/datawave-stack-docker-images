@@ -1,0 +1,9 @@
+**
+!Dockerfile
+!entrypoint.sh
+!conf/
+!conf/**
+!files/
+!files/accumulo-*-bin.tar.gz
+!files/apache-zookeeper-*-bin.tar.gz
+!files/.gitkeep

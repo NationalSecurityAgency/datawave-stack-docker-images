@@ -1,5 +1,8 @@
-[bigtop]
-name=Bigtop
+[bigtop-support]
+name=Apache Bigtop dependencies
 enabled=1
 gpgcheck=0
-baseurl=http://repos.bigtop.apache.org/releases/3.2.1/centos/7/$basearch
+# The S3 endpoint serves the official repository over valid HTTPS.
+baseurl=https://s3.amazonaws.com/repos.bigtop.apache.org/releases/3.2.1/rockylinux/8/$basearch
+# Hadoop itself must come from the selected private repository or local RPMs.
+excludepkgs=hadoop*

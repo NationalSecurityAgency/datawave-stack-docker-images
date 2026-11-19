@@ -1,15 +1,10 @@
-ARG REGISTRY="ghcr.io/nationalsecurityagency"
-ARG BUILDER_IMAGE_NAME=${REGISTRY}/datawave-stack-hadoop
-
-ARG BUILDER_IMAGE_TAG=main
-
-ARG BASE_IMAGE_NAME=${REGISTRY}/datawave-stack-hadoop
-ARG BASE_IMAGE_TAG=main
+# syntax=docker/dockerfile:1
+ARG HADOOP_IMAGE=stack-hadoop
 
 ARG ACCUMULO_VERSION=2.1.6
-ARG ZOOKEEPER_VERSION=3.8.6
+ARG ZOOKEEPER_VERSION=3.8.8
 
-FROM ${BUILDER_IMAGE_NAME}:${BUILDER_IMAGE_TAG} AS builder
+FROM ${HADOOP_IMAGE} AS builder
 
 ARG ACCUMULO_VERSION
 ARG ZOOKEEPER_VERSION
@@ -30,11 +25,9 @@ RUN	yum -y update && \
 		wget \
 	&& yum clean all
 
-ENV JAVA_HOME=/usr/lib/jvm/java
-
 # Allow users to provide their own builds of Accumulo and ZooKeeper.
-COPY ./files/ .
-
+WORKDIR /
+COPY ./files/ /
 # Otherwise, download official distributions
 RUN cd / && \
     if [ ! -f "./accumulo-${ACCUMULO_VERSION}-bin.tar.gz" ]; then \
@@ -51,16 +44,13 @@ RUN cd / && \
 	rm -f ./accumulo-${ACCUMULO_VERSION}-bin.tar.gz && \
 	accumulo-${ACCUMULO_VERSION}/bin/accumulo-util build-native
 
-# Extract the Zookeeper libraries and scripts and delete the tarbell.
+# Extract the ZooKeeper libraries and scripts and delete the archive.
 RUN \
-  rm -rf ./hadoop-${HADOOP_VERSION}/share/hadoop/yarn && \
-  tar -xf ./apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz apache-zookeeper-${ZOOKEEPER_VERSION}-bin/lib/ && \
-  tar -xf ./apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz --wildcards "apache-zookeeper-${ZOOKEEPER_VERSION}-bin/bin/*.sh" && \
+	tar -xf ./apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz apache-zookeeper-${ZOOKEEPER_VERSION}-bin/lib/ && \
+	tar -xf ./apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz --wildcards "apache-zookeeper-${ZOOKEEPER_VERSION}-bin/bin/*.sh" && \
 	rm -f ./apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz
 
-RUN cd / && pwd && ls -al
-
-FROM ${BASE_IMAGE_NAME}:${BASE_IMAGE_TAG}
+FROM ${HADOOP_IMAGE}
 ARG ACCUMULO_VERSION
 ARG ZOOKEEPER_VERSION
 ARG USER=accumulo
@@ -75,7 +65,6 @@ RUN yum -y update && \
 RUN wget -O /usr/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.5/dumb-init_1.2.5_x86_64
 RUN chmod +x /usr/bin/dumb-init
 
-RUN cd /
 COPY --from=builder /accumulo-${ACCUMULO_VERSION} /opt/accumulo-${ACCUMULO_VERSION}/
 COPY ./conf /opt/accumulo-${ACCUMULO_VERSION}/conf
 COPY --from=builder /apache-zookeeper-${ZOOKEEPER_VERSION}-bin /opt/zookeeper-${ZOOKEEPER_VERSION}/
@@ -95,7 +84,7 @@ RUN cd /opt \
 	&& usermod -d /opt/accumulo ${USER}
 
 COPY ./entrypoint.sh /
-RUN chmod 777 /entrypoint.sh
+RUN chmod 755 /entrypoint.sh && rpm -qa | sort > /rpm-manifest.txt
 
 USER ${USER}
 
@@ -104,8 +93,7 @@ ENV ACCUMULO_CONF_DIR=${ACCUMULO_HOME}/conf
 ENV ACCUMULO_LOG_DIR=/var/log/accumulo
 ENV ZOOKEEPER_HOME=/opt/zookeeper
 ENV PATH=$ACCUMULO_HOME/bin:$PATH
-ENV HADOOP_HOME=/usr/local/hadoop \
-    JAVA_HOME=/usr/lib/jvm/java
+ENV HADOOP_HOME=/usr/local/hadoop
 
 
 ENTRYPOINT ["/entrypoint.sh", "accumulo"]

@@ -61,10 +61,19 @@ if [[ -n $CLASSPATH ]]; then
 else
   CLASSPATH="${conf}"
 fi
-ZK_JARS=$(find "$ZOOKEEPER_HOME/lib/" -maxdepth 1 -name '*.jar' -not -name '*slf4j*' -not -name '*log4j*' | paste -sd:)
+ZK_JARS=$(find "$ZOOKEEPER_HOME/lib/" -maxdepth 1 -name '*.jar' -not -name '*slf4j*' -not -name '*log4j*' -not -name '*logback*' | paste -sd:)
+# Bigtop RPMs place client jars under client/, Apache tarballs under share/.
+if [[ -d "${HADOOP_HOME}/client" ]]; then
+  HADOOP_CLIENT_DIR="${HADOOP_HOME}/client"
+else
+  HADOOP_CLIENT_DIR="${HADOOP_HOME}/share/hadoop/client"
+fi
+HADOOP_JARS=$(find "$HADOOP_CLIENT_DIR" -maxdepth 1 -name '*.jar' \
+  -not -name '*slf4j*' -not -name '*log4j*' -not -name '*logback*' \
+  -not -name '*reload4j*' -not -name 'zookeeper*' | paste -sd:)
 # lib is set by calling script that sources this env file
 #shellcheck disable=SC2154
-CLASSPATH="${CLASSPATH}:${lib}/*:${HADOOP_CONF_DIR}:${ZOOKEEPER_HOME}/*:${ZK_JARS}:${HADOOP_HOME}/share/hadoop/client/*"
+CLASSPATH="${CLASSPATH}:${lib}/*:${HADOOP_CONF_DIR}:${ZOOKEEPER_HOME}/*:${ZK_JARS}:${HADOOP_JARS}"
 export CLASSPATH
 
 ##################################################################

@@ -1,0 +1,5 @@
+{
+  "hadoop": "3.4.3",
+  "accumulo": "2.1.6",
+  "zookeeper": "3.8.8"
+}

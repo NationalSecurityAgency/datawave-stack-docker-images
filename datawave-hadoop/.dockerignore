@@ -1,0 +1,5 @@
+**
+!Dockerfile
+!install-hadoop.sh
+!bigtop.repo
+# Supply repo configuration with --secret and RPMs through a named context.

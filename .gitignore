@@ -2,3 +2,13 @@ datawave-hadoop/artifactory.repo
 
 *.idea
 *.iml
+*.repo
+!*.repo.example
+!datawave-hadoop/bigtop.repo
+.build/
+__pycache__/
+*.pyc
+*.rpm
+*.tar
+*.tar.gz
+*.tar.bz2

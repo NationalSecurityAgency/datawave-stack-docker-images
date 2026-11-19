@@ -1,0 +1,10 @@
+[hadoop-build]
+name=Hadoop build RPMs
+baseurl=https://artifactory.example.com/artifactory/hadoop-rpm-local/el8/
+enabled=1
+gpgcheck=1
+gpgkey=https://artifactory.example.com/artifactory/keys/RPM-GPG-KEY-hadoop
+sslverify=1
+# Set credentials in your local copy or the HADOOP_REPO_CONFIG Actions secret.
+# username=build-user
+# password=token

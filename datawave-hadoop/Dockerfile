@@ -3,10 +3,17 @@ FROM ${REGISTRY}/datawave-stack-base:main
 
 # Add native libs
 ARG HADOOP_VERSION=3.4.1
-ADD bigtop.repo /etc/yum.repos.d
-ADD artifactory.repo /etc/yum.repos.d/
+# Native debugging is available when needed, without shipping symbols by default.
+ARG HADOOP_DEBUG_SYMBOLS=false
+COPY bigtop.repo /etc/yum.repos.d/
 
-RUN yum clean all && \
+RUN --mount=type=secret,id=artifactory_repo,target=/etc/yum.repos.d/artifactory.repo \
+    case "${HADOOP_DEBUG_SYMBOLS}" in \
+        true) hadoop_debug_package=hadoop-debuginfo ;; \
+        false) hadoop_debug_package="" ;; \
+        *) echo "HADOOP_DEBUG_SYMBOLS must be true or false" >&2; exit 1 ;; \
+    esac && \
+    yum clean all && \
     rm -rf /var/cache/yum && \
     yum clean expire-cache && \
     yum makecache && \
@@ -18,7 +25,7 @@ RUN yum clean all && \
     lzo \
     protobuf-c \
     hadoop hadoop-hdfs hadoop-libhdfs hadoop-client \
-    hadoop-yarn hadoop-yarn-router hadoop-yarn-proxyserver hadoop-debuginfo \
+    hadoop-yarn hadoop-yarn-router hadoop-yarn-proxyserver ${hadoop_debug_package} \
     hadoop-yarn-timelineserver hadoop-yarn-nodemanager hadoop-hdfs-journalnode \
     hadoop-mapreduce hadoop-mapreduce-historyserver && yum clean all && \
     rm -rf /var/cache/yum && \
@@ -46,8 +53,7 @@ RUN yum clean all && \
     chown hdfs:hdfs -R /var/log/hadoop* && \
     chmod 777 -R /etc/hadoop/ && \
     chmod 777 -R /opt/hdfs/hadoop-yarn && \
-    rm -Rf /usr/lib/hadoop/tools && \
-    rm -Rf /etc/yum.repos.d/artifactory.repo
+    rm -Rf /usr/lib/hadoop/tools
 
 USER hadoop
 

@@ -113,8 +113,9 @@ repository contents or configuration if the versions stay the same.
 ## GitHub Actions setup
 
 All image jobs use self-hosted Linux x64 runners with Docker, network access to
-Artifactory and the destinations, and Maven for source builds. Java compiler
-setup is handled by the workflow. Configure these repository settings:
+Artifactory and the destinations, and Maven for source builds. The workflow
+installs JDK 21 for Accumulo compilation, independently of the Java 11/17 image
+runtimes. Configure these repository settings:
 
 | Setting | Type | Purpose |
 | --- | --- | --- |
@@ -136,8 +137,8 @@ gh secret set HADOOP_REPO_CONFIG < datawave-hadoop/artifactory.repo
 - **Build release images** runs on relevant changes to `main`, weekly, or
   manually. Manual runs select Java and GHCR/private/both destinations.
 - **Build Accumulo from source** runs nightly against `apache/accumulo:2.1` or
-  manually against a repository/ref. It builds the distribution with the
-  selected compiler JDK, then builds the full image chain. Source image tags
+  manually against a repository/ref. It compiles the distribution with JDK 21,
+  then builds the full image chain. Source image tags
   contain the Maven version, Accumulo commit and runtime Java version. Select
   only compatible runtimes for branches that require a newer Java baseline.
 - Automatic runs publish to both destinations when `SELF_HOSTED_REGISTRY` is

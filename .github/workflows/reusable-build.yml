@@ -21,9 +21,6 @@ on:
       source_ref:
         type: string
         default: '2.1'
-      build_java:
-        type: string
-        default: '17'
     secrets:
       HADOOP_REPO_CONFIG:
         required: false
@@ -79,12 +76,12 @@ jobs:
           ref: ${{ inputs.source_ref }}
           path: .build/accumulo
           persist-credentials: false
-      - name: Set up compiler JDK
+      - name: Set up JDK 21 for Accumulo compilation
         if: inputs.source_repository != ''
         uses: actions/setup-java@v4
         with:
           distribution: corretto
-          java-version: ${{ inputs.build_java }}
+          java-version: '21'
           cache: maven
           cache-dependency-path: .build/accumulo/**/pom.xml
       - name: Build Accumulo distribution

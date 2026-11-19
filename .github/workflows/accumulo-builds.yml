@@ -16,11 +16,6 @@ on:
         type: choice
         options: [both, '11', '17']
         default: both
-      build_java:
-        description: JDK used by Maven (independent of image runtime)
-        type: choice
-        options: ['17', '11']
-        default: '17'
       destination:
         description: Publish destination (all builds run self-hosted)
         type: choice
@@ -50,5 +45,4 @@ jobs:
       destination: ${{ inputs.destination || (vars.SELF_HOSTED_REGISTRY != '' && 'both' || 'ghcr') }}
       source_repository: ${{ inputs.accumuloRepo || 'apache/accumulo' }}
       source_ref: ${{ inputs.accumuloBranch || '2.1' }}
-      build_java: ${{ inputs.build_java || '17' }}
     secrets: inherit

@@ -112,8 +112,8 @@ repository contents or configuration if the versions stay the same.
 
 ## GitHub Actions setup
 
-All image jobs use self-hosted Linux x64 runners with Docker, network access to
-Artifactory and the destinations, and Maven for source builds. The workflow
+All image jobs use self-hosted Linux x64 runners with Python 3.9+, Docker, network
+access to Artifactory and the destinations, and Maven for source builds. The workflow
 installs JDK 21 for Accumulo compilation, independently of the Java 11/17 image
 runtimes. Configure these repository settings:
 
@@ -125,6 +125,14 @@ runtimes. Configure these repository settings:
 | `CY_ROBOT_ACCOUNT_USER` | Secret | Private registry username |
 | `CY_ROBOT_ACCOUNT_SECRET` | Secret | Private registry password/token |
 | `IMAGE_RUNNER_LABELS` | Optional variable | JSON label array; defaults to `["self-hosted","linux","x64"]` |
+| `IMAGE_PYTHON` | Optional variable | Installed Python 3.9+ executable name or absolute path; defaults to `python3` |
+
+Image jobs use Python already installed on the runner; they do not download an
+OS-specific Python distribution through `actions/setup-python`. Provision
+Python 3.9+ in the runner image. If the default `python3` is older, set
+`IMAGE_PYTHON` to an installed interpreter such as `/usr/bin/python3.11`.
+The workflow checks its version before building. GitHub-hosted validation jobs
+continue to use `actions/setup-python` on Ubuntu.
 
 The old `ARTIFACTORY_TOKEN` alone is replaced by `HADOOP_REPO_CONFIG`, so the
 repository URL and credentials no longer need to be hard-coded in public YAML.
